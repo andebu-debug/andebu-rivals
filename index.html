@@ -405,13 +405,13 @@ nt+=sp;st++}}
 AR.musicStart=()=>{try{if(!AR.mus)return;if(!MA){MA=new(window.AudioContext||window.webkitAudioContext)();mg=MA.createGain();mg.gain.value=.2;mg.connect(MA.destination);const n=MA.sampleRate;nb=MA.createBuffer(1,n,n);const a=nb.getChannelData(0);for(let i=0;i<n;i++)a[i]=Math.random()*2-1}
 if(MA.state=='suspended')MA.resume();if(!tmr){nt=MA.currentTime+.1;tmr=setInterval(()=>{if(!MA)return;if(!G.on||!AR.mus){if(MA.state=='running')MA.suspend();return}if(MA.state=='suspended')MA.resume();else sched()},40)}}catch(e){}};
 /* stemme + kill-serier */
-function say(t,pitch,rate){if(!AR.voice||!window.speechSynthesis)return;try{const u=new SpeechSynthesisUtterance(t),vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));u.voice=vs.find(v=>/male|daniel|david|alex|fred|george|google uk english male/i.test(v.name))||vs[0]||null;u.lang='en-US';u.pitch=pitch||.2;u.rate=rate||.82;u.volume=1;speechSynthesis.speak(u)}catch(e){}}
+function say(t,pitch,rate){return;try{const u=new SpeechSynthesisUtterance(t),vs=speechSynthesis.getVoices().filter(v=>/^en/i.test(v.lang));u.voice=vs.find(v=>/male|daniel|david|alex|fred|george|google uk english male/i.test(v.name))||vs[0]||null;u.lang='en-US';u.pitch=pitch||.2;u.rate=rate||.82;u.volume=1;speechSynthesis.speak(u)}catch(e){}}
 let aT=0;function ann(t,big){const e=$('ann');e.textContent=t;e.style.fontSize=big?'clamp(46px,11vw,120px)':'';e.style.color=big?'#ff2a2a':'';e.style.transform='translateX(-50%) scale('+(big?1.15:1)+')';e.style.opacity=1;clearTimeout(aT);aT=setTimeout(()=>e.style.opacity=0,big?1100:1700)}
 AR.say=say;AR.ann=ann;
 
 const _k=kill;kill=function(b){const hs=AR.hs;AR.hs=false;if(b.rp)return;_k(b);const n=performance.now()/1000;AR.ks=AR.ks.filter(t=>n-t<10);AR.ks.push(n);const c=AR.ks.length;
 if(hs){if(window.speechSynthesis)speechSynthesis.cancel();say('HEADSHOT!',.9,1.05);ann('HEADSHOT!!',1);AR.sfx&&AR.sfx(.25,2200,.35)}
-if(c>=5){say('MONSTER KILL!',.1,.75);ann('MONSTER KILL!!!');AR.ks=[]}};
+if(c>=5){AR.sfx&&(AR.sfx(.9,450,.9),AR.sfx(.35,3500,.5));ann('MONSTER KILL!!!');AR.ks=[]}};
 addEventListener('keydown',e=>{if(e.code=='KeyM'&&G.on){AR.mus=!AR.mus;if(AR.mus)AR.musicStart();ann(AR.mus?'🎵 ON':'🎵 OFF')}});
 /* menyvalg musikk/stemme */
 const mk=(l)=>{const s=document.createElement('select');s.add(new Option('',1));s.add(new Option('',0));return s},ms=mk(),vs=mk();$('mode').parentNode.append(' ',ms,' ',vs);
@@ -577,7 +577,7 @@ if(m.t=='s'&&r){r.tx=m.x;r.ty3=m.y;r.tz=m.z;r.tyaw=m.yaw;r.jf=m.j;r.hp=m.hp;r.de
 else if(m.t=='f')tracerAB(m.o,m.d);
 else if(m.t=='hit'){AR.lastBy=m.from;hurt(m.d)}
 else if(m.t=='dead'){if(m.by!=m.id)NET.scores[m.by]=(NET.scores[m.by]||0)+1;NET.deaths[m.id]=(NET.deaths[m.id]||0)+1;if(r){burst(r.x,r.y+1,r.z);r.mesh.visible=false;r.dead=1}
-if(m.by==NET.me&&m.by!=m.id){G.k=NET.scores[NET.me];const n=performance.now()/1000;AR.ks=AR.ks.filter(t=>n-t<10);AR.ks.push(n);if(AR.ks.length>=5){AR.say('MONSTER KILL!',.1,.75);AR.ann('MONSTER KILL!!!');AR.ks=[]}}
+if(m.by==NET.me&&m.by!=m.id){G.k=NET.scores[NET.me];const n=performance.now()/1000;AR.ks=AR.ks.filter(t=>n-t<10);AR.ks.push(n);if(AR.ks.length>=5){AR.sfx&&(AR.sfx(.9,450,.9),AR.sfx(.35,3500,.5));AR.ann('MONSTER KILL!!!');AR.ks=[]}}
 if(G.on&&G.target&&m.by!=m.id&&NET.scores[m.by]>=G.target)finish(m.by)}}
 AR.handle=handle;
 /* ---- start / oppdatering / slutt ---- */
@@ -696,7 +696,7 @@ g.scale.setScalar(1.5);W.add(g);
 return{mf,pcd:0,fl2:0,mesh:g,x:0,z:0,y:0,vy:0,px:0,pz:0,ph:0,hp:500,dead:0,t:0,cd:1,st:0,sd:1,mm:red,em:0x5a0000,legL:leg(-.25),legR:leg(.25),jp,fly:0,ft:rnd(3,9),ty:3,boss:1,sz:1.5}}
 AR.mkBoss=mkBoss;
 const _sp=sp;sp=function(b){_sp(b);if(b.boss){b.spd=3.4;b.jmp=.15;b.acc=1.3;b.cover=0;b.hp=500;b.dm=1.8}};
-const _k=kill;kill=function(b){_k(b);if(b.boss){b.t=30;G.k+=2;AR.ann&&AR.ann('👹 MONSTER-KLOVN DREPT!',1);AR.say&&AR.say('MONSTER KILL!',.1,.75)}};
+const _k=kill;kill=function(b){_k(b);if(b.boss){b.t=30;G.k+=2;}};
 const _s=start;start=function(){_s();if(!AR.online){const b=mkBoss();sp(b);bots.push(b);AR.toast&&AR.toast('👹 MONSTER-KLOVNEN jakter deg!','👹 MONSTER CLOWN is hunting you!')}};
 $('go').onclick=()=>{AR.online=0;start()};
 })();
