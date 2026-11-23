@@ -175,17 +175,17 @@ const _s=start;start=function(){SP=+sd.value;_s();PT=[];TR=[];sky();W.children.s
 <script>
 let L='no',DFv=1;try{L=localStorage.getItem('arL')||'no'}catch(e){}
 const MN=MP.map(m=>m[0]),lg=document.createElement('select');lg.add(new Option('🇳🇴 Norsk','no'));lg.add(new Option('🇬🇧 English','en'));$('menu').children[0].after(lg);
-const df=document.createElement('select');[0,1,2].forEach(i=>df.add(new Option('',i)));df.value=1;$('mode').parentNode.append(' ',df);
-const TX={no:{go:'SPILL!',dead:'Du ble tatt ut…',dl:'Vanskelighet: ',df:['Lett','Middels','Vanskelig'],sl:'Fart: ',k:n=>'Først til '+n+' kills',m5:'5 minutters kamp',b:['SKYT','HOPP','BRUK'],v:['bil','elsparkesykkel','sykkel','gokart'],maps:MN,
+const df=document.createElement('select');[0,1,2,3].forEach(i=>df.add(new Option('',i)));df.value=1;$('mode').parentNode.append(' ',df);
+const TX={no:{go:'SPILL!',dead:'Du ble tatt ut…',dl:'Vanskelighet: ',df:['Lett','Middels','Vanskelig','Godlike'],sl:'Fart: ',k:n=>'Først til '+n+' kills',m5:'5 minutters kamp',b:['SKYT','HOPP','BRUK'],v:['bil','elsparkesykkel','sykkel','gokart'],maps:MN,
 help:'PC: WASD gå · mus sikte · klikk skyt · Mellomrom hopp · Shift løp · Mobil: pinne til venstre, dra til høyre for å se seg rundt. Du får tilbake helse når du ikke blir truffet.'},
-en:{go:'PLAY!',dead:'You got taken out…',dl:'Difficulty: ',df:['Easy','Medium','Hard'],sl:'Speed: ',k:n=>'First to '+n+' kills',m5:'5-minute match',b:['SHOOT','JUMP','USE'],v:['car','e-scooter','bike','go-kart'],maps:['🏫 School','🛹 Schoolyard','🌳 Park','🛒 Kiwi store','📚 Library','⚽ Football arena','🏎️ Go-kart track'],
+en:{go:'PLAY!',dead:'You got taken out…',dl:'Difficulty: ',df:['Easy','Medium','Hard','Godlike'],sl:'Speed: ',k:n=>'First to '+n+' kills',m5:'5-minute match',b:['SHOOT','JUMP','USE'],v:['car','e-scooter','bike','go-kart'],maps:['🏫 School','🛹 Schoolyard','🌳 Park','🛒 Kiwi store','📚 Library','⚽ Football arena','🏎️ Go-kart track'],
 help:'PC: WASD move · mouse aim · click to shoot · Space jump · Shift run · Mobile: stick on the left, drag on the right to look around. You regain health when you are not being hit.'}};
 function setLang(l){L=l;try{localStorage.setItem('arL',l)}catch(e){}const t=TX[l];lg.value=l;$('go').textContent=t.go;$('dead').textContent=t.dead;
 [...df.options].forEach((o,i)=>o.text=t.dl+t.df[i]);[...sd.options].forEach((o,i)=>o.text=t.sl+['Normal','Rapid','Ultra'][i]);[...md.options].forEach(o=>o.text=+o.value?t.k(o.value):t.m5);
 [...mp.children].forEach((b,i)=>b.textContent=t.maps[i]);VT.forEach((v,i)=>v.n=t.v[i]);['f','j','e'].forEach((k,i)=>{const e=document.querySelector('[data-b='+k+']');if(e)e.textContent=t.b[i]});$('menu').querySelector('small').textContent=t.help}
 lg.onchange=()=>setLang(lg.value);
 /* vanskelighetsgrad: treffsikkerhet, skade og antall fiender */
-const DFS=[{h:.3,d:.5,b:4},{h:.55,d:.7,b:6},{h:.85,d:.9,b:8}];
+const DFS=[{h:.2,d:.4,b:3},{h:.3,d:.5,b:4},{h:.55,d:.7,b:6},{h:1,d:1.15,b:10}];
 const _h=hurt;hurt=function(n){if(AR.online){G.lh=G.t;_h(n);return}const f=DFS[DFv];if(Math.random()>f.h)return;G.lh=G.t;_h(n*f.d)};
 const _u2=update;update=function(dt){_u2(dt);if(!G.on)return;if(G.hp<100&&!G.dead&&G.t-(G.lh||0)>3)G.hp=Math.min(100,G.hp+dt*14);const p=$('pr');if(L=='en')p.textContent=p.textContent.replace('E: sett deg på ','E: get on ').replace('E: gå av ','E: get off ')};
 const _e=end;end=function(w){_e(w);if(L=='en')$('msg').textContent=(G.target?(w?'🏆 VICTORY! ':'Time is up. '):'⏱️ Time is up! ')+G.k+' kills · taken out '+G.deaths+' times'};
